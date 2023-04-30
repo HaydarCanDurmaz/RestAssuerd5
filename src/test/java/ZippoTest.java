@@ -127,6 +127,7 @@ public class ZippoTest {
         given()
                 .pathParam("ulke", "us")
                 .pathParam("pstakodu", 90210)
+                .log().uri() // request Link
 
                 .when()
                 .get("http://api.zippopotam.us/{ulke}/{pstakodu}")
@@ -138,6 +139,48 @@ public class ZippoTest {
 
     }
 
+    @Test
+    public void queryParamTest() {
+
+        // https://gorest.co.in/public/v1/users?page=3
+
+        given()
+                .param("page", 1)  // ?page=1  şeklinde linke ekleniyor
+                .log().uri() // request Link
+
+                .when()
+                .get("https://gorest.co.in/public/v1/users")  // ?page=1
+
+                .then()
+                .statusCode(200)
+                .log().body()
+        ;
 
 
+    }
+
+    @Test
+    public void queryParamTest2() {
+        // https://gorest.co.in/public/v1/users?page=3
+        // bu linkteki 1 den 10 kadar sayfaları çağırdığınızda response daki donen page degerlerinin
+        // çağrılan page nosu ile aynı olup olmadığını kontrol ediniz.
+
+
+        for (int i = 1; i < 10; i++) {
+            given()
+                    .param("page", i)  // ?page=1  şeklinde linke ekleniyor
+                    .log().uri() // request Link
+
+                    .when()
+                    .get("https://gorest.co.in/public/v1/users")  // ?page=1
+
+                    .then()
+                    .statusCode(200)
+                    .log().body()
+                    .body("meta.pagination.page", equalTo(i))
+            ;
+        }
+
+    }
 }
+
