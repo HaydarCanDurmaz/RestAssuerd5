@@ -16,15 +16,16 @@ import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
 
-
 public class ZippoTest {
     @Test
-    public void test(){
+    public void test() {
         given()          // hazırlık işlemleri  : (token,send body, parametreler)
                 .when()  // endpoint (url), metodu
                 .then(); // assertion, test, data işlemleri
-    } @Test
-    public void test1(){
+    }
+
+    @Test
+    public void test1() {
 
 
         given()
@@ -36,15 +37,16 @@ public class ZippoTest {
                 .statusCode(200) // dönüş kodu 200 mü
         ;
     }
+
     @Test
-    public void checkCounrtryInResponseBody(){
+    public void checkCounrtryInResponseBody() {
         given()
                 .when()
                 .get("http://api.zippopotam.us/us/90210")
                 .then()
                 .log().body()
                 .statusCode(200)
-                .body("country",equalTo("United States")); // body nin country degişkeni " United States eşitmi
+                .body("country", equalTo("United States")); // body nin country degişkeni " United States eşitmi
 
 
         // pm.response.json().id -> body.id
@@ -60,7 +62,7 @@ public class ZippoTest {
 //    https://jsonpathfinder.com/
 
     @Test
-    public void checkstateInResponseBody(){
+    public void checkstateInResponseBody() {
         given()
 
                 .when()
@@ -72,22 +74,24 @@ public class ZippoTest {
                 .body("places[0].state", equalTo("California"))
         ;
     }
+
     @Test
-    public void checkHasItemy(){
+    public void checkHasItemy() {
         given()
 
                 .when()
                 .get("http://api.zippopotam.us/tr/01000")
 
                 .then()
-               // .log().body()
+                // .log().body()
                 .statusCode(200)
                 .body("places.'place name'", hasItem("Dörtağaç Köyü"))
         // bütün place name lerin herhangi birinde Dörtağaç Köyü varmı
         ;
     }
+
     @Test
-    public void bodyArrayHasSizeTest(){
+    public void bodyArrayHasSizeTest() {
         given()
 
                 .when()
@@ -99,8 +103,9 @@ public class ZippoTest {
                 .body("places", hasSize(1))
         ;
     }
+
     @Test
-    public void combiningTest(){
+    public void combiningTest() {
         given()
 
                 .when()
@@ -115,6 +120,23 @@ public class ZippoTest {
         ;
     }
 
+    @Test
+    public void pathParamTest() {
+
+
+        given()
+                .pathParam("ulke", "us")
+                .pathParam("pstakodu", 90210)
+
+                .when()
+                .get("http://api.zippopotam.us/{ulke}/{pstakodu}")
+
+                .then()
+                .statusCode(200)
+        //.log().body()
+        ;
+
+    }
 
 
 
