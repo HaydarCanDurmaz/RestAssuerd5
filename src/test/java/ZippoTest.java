@@ -360,7 +360,8 @@ public class ZippoTest {
     }
 
     @Test
-    public void extractJsonAll() {
+    public void extractJsonAll_POJO() {
+        // POJO : JSON nesnesi : locationNesnesi
         Location locationNesnesi =
                 given()
                         .when()
@@ -379,6 +380,29 @@ public class ZippoTest {
             System.out.println("p = " + p);
 
         System.out.println(locationNesnesi.getPlaces().get(0).getPlacename());
+
+
+    }
+    @Test
+    public void extractJsonAll_POJO_Soru() {
+        // aşağıdaki endpointte(link)  Dörtağaç Köyü ait diğer bilgileri yazdırınız
+
+        Location adana =
+                given()
+
+                        .when()
+                        .get("http://api.zippopotam.us/tr/01000")
+
+                        .then()
+                        .log().body()    // dönen body json datat sı,   log.all()
+                        .statusCode(200)
+                        .extract().body().as(Location.class);
+        for (Place p : adana.getPlaces())
+            if (p.getPlacename().equalsIgnoreCase("Dörtağaç Köyü"))
+            {
+                System.out.println("p = " + p);
+            }
+
 
 
     }
