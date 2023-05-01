@@ -1,5 +1,7 @@
 package Model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.ArrayList;
 
 public class Location {
@@ -11,7 +13,7 @@ public class Location {
     public String getPostcode() {
         return postcode;
     }
-
+    @JsonProperty("post code")
     public void setPostcode(String postcode) {
         this.postcode = postcode;
     }
@@ -27,7 +29,7 @@ public class Location {
     public String getCountryyabbreviation() {
         return countryyabbreviation;
     }
-
+    @JsonProperty("country abbreviation")
     public void setCountryyabbreviation(String countryyabbreviation) {
         this.countryyabbreviation = countryyabbreviation;
     }

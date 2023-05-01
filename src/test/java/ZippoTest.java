@@ -1,6 +1,7 @@
 
 
 import Model.Location;
+import Model.Place;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.filter.log.LogDetail;
@@ -360,7 +361,7 @@ public class ZippoTest {
 
     @Test
     public void extractJsonAll() {
-        Location locationnesnesi =
+        Location locationNesnesi =
                 given()
                         .when()
                         .get("http://api.zippopotam.us/us/90210")
@@ -370,7 +371,14 @@ public class ZippoTest {
                         .extract().body().as(Location.class);
 
         // location şablonuna
-        System.out.println("locationnesnesi.getCountry = " + locationnesnesi.getCountry());
+
+        System.out.println("locationNesnesi.getCountry() = " +
+                locationNesnesi.getCountry());
+
+        for(Place p: locationNesnesi.getPlaces())
+            System.out.println("p = " + p);
+
+        System.out.println(locationNesnesi.getPlaces().get(0).getPlacename());
 
 
     }
