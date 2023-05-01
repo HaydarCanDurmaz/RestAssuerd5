@@ -1,5 +1,6 @@
 
 
+import Model.Location;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.filter.log.LogDetail;
@@ -11,7 +12,6 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import javax.xml.stream.Location;
 import java.util.List;
 
 import static io.restassured.RestAssured.*;
@@ -356,6 +356,23 @@ public class ZippoTest {
         Assert.assertTrue(names.contains("Dakshayani Pandey"));
         Assert.assertTrue(idler.contains(1203767));
         Assert.assertEquals(limit, 10, "test sonucu hatalı");
+    }
+
+    @Test
+    public void extractJsonAll() {
+        Location locationnesnesi =
+                given()
+                        .when()
+                        .get("http://api.zippopotam.us/us/90210")
+
+                        .then()
+                        .log().body()
+                        .extract().body().as(Location.class);
+
+        // location şablonuna
+        System.out.println("locationnesnesi.getCountry = " + locationnesnesi.getCountry());
+
+
     }
 
 
