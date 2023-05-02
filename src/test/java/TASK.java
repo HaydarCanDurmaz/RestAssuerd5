@@ -1,5 +1,6 @@
 import Model.ToDo;
 import io.restassured.http.ContentType;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
@@ -14,8 +15,7 @@ public class TASK {
      */
 
     @Test
-    public void task2()
-    {
+    public void task2() {
         given()
 
                 .when()
@@ -28,29 +28,32 @@ public class TASK {
         ;
 
     }
-    /** Task 1
+
+    /**
+     * Task 1
      * create a request to https://jsonplaceholder.typicode.com/todos/2
      * expect status 200
      * Converting Into POJO
      */
     @Test
-    public void task1(){
-        ToDo toDo=
-        given()
+    public void task1() {
+        ToDo toDo =
+                given()
 
-                .when()
-                .get("https://jsonplaceholder.typicode.com/todos/2")
+                        .when()
+                        .get("https://jsonplaceholder.typicode.com/todos/2")
 
-                .then()
-                .log().body()//.all()
-               .statusCode(200)
-                .extract().body().as(ToDo.class)
-              //  .contentType(ContentType.TEXT)
-        ;
+                        .then()
+                        .log().body()//.all()
+                        .statusCode(200)
+                        .extract().body().as(ToDo.class)
+                //  .contentType(ContentType.TEXT)
+                ;
         System.out.println("toDo = " + toDo);
         System.out.println("toDo.getTitle() = " + toDo.getTitle());
 
     }
+
     /**
      * Task 3
      * create a request to https://jsonplaceholder.typicode.com/todos/2
@@ -60,8 +63,7 @@ public class TASK {
      */
 
     @Test
-    public void task3()
-    {
+    public void task3() {
         given()
                 .when()
                 .get("https://jsonplaceholder.typicode.com/todos/2")
@@ -73,16 +75,44 @@ public class TASK {
         ;
     }
 
+    /**
+     * Task 4
+     * create a request to https://jsonplaceholder.typicode.com/todos/2
+     * expect status 200
+     * expect content type JSON
+     * expect response completed status to be false(hamcrest)
+     * extract completed field and testNG assertion(testNG)
+     */
 
+    @Test
+    public void task4()
+    // 1. YÖNTEM (hamcresy)
+    {
+        given()
+                .when()
+                .get("https://jsonplaceholder.typicode.com/todos/2")
+                .then()
+                .log().body()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("completed", equalTo(false))
+        ;
+        // 2. YÖNTEM (TestNG)
+        Boolean completed =
+                given()
+                        .when()
+                        .get("https://jsonplaceholder.typicode.com/todos/2")
+                        .then()
+                        .log().body()
+                        .statusCode(200)
+                        .contentType(ContentType.JSON)
+                        .extract().path("completed");
 
-
-
-
-
-
-
-
+        Assert.assertFalse(completed);
 
 
     }
+
+
+}
 
