@@ -76,8 +76,8 @@ public class GoRestUsersTest {
         ;
 
     }
-    @Test(enabled = false)
-    public void createUserNesne() {
+    @Test(enabled = true)
+    public void createUserClas() {
         // POST https://gorest.co.in/public/v2/users
         // "Authorization: Bearer 523891d26e103bab0089022d20f1820be2999a7ad693304f560132559a2a152d"
         // {"name":"{{$randomFullName}}", "gender":"male", "email":"{{$randomEmail}}", "status":"active"}

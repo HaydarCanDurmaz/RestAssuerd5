@@ -14,12 +14,25 @@ public class MersysTestCampus {
 
     int userID;
 
+@Test
+public void LoginMersys(){
+    given()
+            .header("Authorization","Bearer 141200321fad2672fe320a9cbee627057de198d05237c658e8976a7fc73ed313")
+
+            .when()
+            .contentType(ContentType.JSON)
+            .post("https://test.mersys.io/auth/login")
+
+            .then()
+            .statusCode(200)
+            .contentType(ContentType.JSON)
+            ;
+}
 
 
 
 
-
-    @Test
+    @Test(dependsOnMethods = "LoginMersys")
     public void CreateGradeLevels(){
         // POST : https://test.mersys.io/school-service/api/grade-levels/school
         // Autahorization : Bearer 141200321fad2672fe320a9cbee627057de198d05237c658e8976a7fc73ed313
@@ -50,7 +63,7 @@ public class MersysTestCampus {
                 .when()
                 .post("https://test.mersys.io/school-service/api/grade-levels/school")
                 .then()
-                .statusCode(200)
+                .statusCode(201)
                 .contentType(ContentType.JSON)
                 .extract().path("id")
         ;
