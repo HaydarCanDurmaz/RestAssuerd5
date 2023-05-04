@@ -4,6 +4,9 @@ import com.github.javafaker.Faker;
 import io.restassured.http.ContentType;
 import org.testng.annotations.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static io.restassured.RestAssured.given;
 
 public class MersysTestCampus {
@@ -29,12 +32,18 @@ public class MersysTestCampus {
         String rndFullName=randomUretici.name().fullName();
         String rndEmail=randomUretici.internet().emailAddress();
 
+        Map<String,String> newUser=new HashMap<>();
+        newUser.put("name",rndFullName);
+        newUser.put("gender","male");
+        newUser.put("email",rndEmail);
+        newUser.put("status",rndFullName);
+
         userID=
 
         given()
                 .header("Authorization","Bearer 141200321fad2672fe320a9cbee627057de198d05237c658e8976a7fc73ed313")
                 .contentType(ContentType.JSON)
-                .body("{id: \"644c9b0671f486304a998258\", name: \""+rndFullName+"\", order: 1, shortName: \"5721\",…}")
+                .body(newUser)
                // .log().uri()
                // .log().body()
 
