@@ -5,6 +5,7 @@ import io.restassured.http.ContentType;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 
 public class GoRestUsersTest {
 Faker randomUretici=new Faker();
@@ -37,8 +38,20 @@ Faker randomUretici=new Faker();
                 ;
 
     }
-    @Test
+    @Test(dependsOnMethods = "createUser")
     public void getUserByID(){
+        given()
+                .header("Authorization","Bearer 141200321fad2672fe320a9cbee627057de198d05237c658e8976a7fc73ed313")
+
+                .when()
+                .get("https://gorest.co.in/public/v2/users"+userID)
+
+                .then()
+                .log().body()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("id", equalTo(userID))
+                ;
 
     }
     @Test

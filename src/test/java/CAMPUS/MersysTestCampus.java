@@ -28,34 +28,20 @@ public class MersysTestCampus {
         //
         String rndFullName=randomUretici.name().fullName();
         String rndEmail=randomUretici.internet().emailAddress();
-        String rndShortName=randomUretici.name().firstName();
-        int rndInt=randomUretici.idNumber().hashCode();
+
         userID=
 
         given()
                 .header("Authorization","Bearer 141200321fad2672fe320a9cbee627057de198d05237c658e8976a7fc73ed313")
                 .contentType(ContentType.JSON)
-                .body("{\n" +
-                        "  \"id\": null,\n" +
-                        "  \"name\": \""+rndFullName+"\",\n" +
-                        "  \"shortName\": \""+rndShortName+"\"\",\n" +
-                        "  \"nextGradeLevel\": null,\n" +
-                        "  \"order\": \"\""+rndInt+"\"}\",\n" +
-                        "  \"translateName\": [],\n" +
-                        "  \"translateShortName\": [],\n" +
-                        "  \"active\": true,\n" +
-                        "  \"schoolIds\": [\n" +
-                        "    \"6390f3207a3bcb6a7ac977f9\"\n" +
-                        "  ],\n" +
-                        "  \"showToAllSchools\": false\n" +
-                        "}")
+                .body("{id: \"644c9b0671f486304a998258\", name: \""+rndFullName+"\", order: 1, shortName: \"5721\",…}")
                // .log().uri()
                // .log().body()
 
                 .when()
-                .get("https://test.mersys.io/school-service/api/grade-levels/school/6390f3207a3bcb6a7ac977f9")
+                .post("https://test.mersys.io/school-service/api/grade-levels/school")
                 .then()
-                .statusCode(201)
+                .statusCode(200)
                 .contentType(ContentType.JSON)
                 .extract().path("id")
         ;
