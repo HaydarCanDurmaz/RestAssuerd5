@@ -1,18 +1,35 @@
 package CAMPUS;
 
 import com.github.javafaker.Faker;
+import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static io.restassured.RestAssured.baseURI;
 import static io.restassured.RestAssured.given;
 
 public class MersysTestCampus {
-    Faker randomUretici=new Faker();
+    Faker randomUretici = new Faker();
 
     int userID;
+    RequestSpecification reqSpec;
+
+    @BeforeClass
+    public void setup() {
+        baseURI = "https://test.mersys.io ";
+
+        reqSpec = new RequestSpecBuilder()
+                .addHeader("Authorization", "Bearer 141200321fad2672fe320a9cbee627057de198d05237c658e8976a7fc73ed313")
+                .setContentType(ContentType.JSON)
+                .setBaseUri(baseURI)
+                .build();
+
+    }
 
 @Test
 public void LoginMersys(){
