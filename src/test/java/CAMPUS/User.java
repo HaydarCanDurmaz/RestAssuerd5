@@ -1,7 +1,17 @@
 package CAMPUS;
 
 public class User {
+    int id;
     String name;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     String gender;
     String email;
     String status;
