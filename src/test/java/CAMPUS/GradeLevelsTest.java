@@ -5,7 +5,6 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.http.Cookies;
 import io.restassured.specification.RequestSpecification;
-import org.apache.http.cookie.Cookie;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -17,14 +16,15 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 
-
-public class MersysTestCampus {
+public class GradeLevelsTest {
     Faker faker = new Faker();
 
-    String gradeID;
-    String gradeName;
+    String countryID;
+    String countryName;
+
 
     RequestSpecification recSpec;
+
 
     @BeforeClass
     public void Login() {
@@ -54,18 +54,20 @@ public class MersysTestCampus {
                 .addCookies(cookies)
                 .build();
 
+
     }
 
+    @Test(dependsOnMethods = "Login")
+    public void createCountry() {
 
-    @Test
-    public void CreateGradeLevels() {
+
         Map<String, String> country = new HashMap<>();
-        gradeName = faker.address().country() + faker.number().digits(5);
-        country.put("name", gradeName);
+        countryName = faker.address().country() + faker.number().digits(5);
+        country.put("name", countryName);
         country.put("code", faker.address().countryCode() + faker.number().digits(5));
 
 
-        gradeID =
+        countryID =
                 given()
                         .spec(recSpec)
                         .body(country)
@@ -79,15 +81,14 @@ public class MersysTestCampus {
                         .statusCode(201)
                         .extract().path("id")
         ;
-        System.out.println("gradeID = " + gradeID);
-
+        System.out.println("countryId = " + countryID);
 
     }
 
-    @Test(dependsOnMethods = "CreateGradeLevels")
-    public void CreateGradeLevelsNegative() {
+    @Test(dependsOnMethods = "createCountry")
+    public void createCountryNegative() {
         Map<String, String> country = new HashMap<>();
-        country.put("name", gradeName);
+        country.put("name", countryName);
         country.put("code", faker.address().countryCode() + faker.number().digits(5));
 
 
@@ -102,20 +103,20 @@ public class MersysTestCampus {
                 .then()
                 //.log().body()
                 .statusCode(400)
-                .body("message", containsString("already"))
+                .body("message", containsString("already"))  // gelen body deki...
         ;
-
 
     }
 
-    @Test(dependsOnMethods = "CreateGradeLevelsNegative")
-    public void UpdateGradeLevels() {
-        Map<String, String> country = new HashMap<>();
-        country.put("id", gradeID);
+    @Test(dependsOnMethods = "createCountryNegative")
+    public void updateCountry() {
 
-        gradeName = "haydar ülkesi" + faker.number().digits(7);
-        country.put("name", gradeName);
-        country.put("code", faker.address().countryCode() + faker.number().digits(5));
+        Map<String,String> country=new HashMap<>();
+        country.put("id",countryID);
+
+        countryName="haydar ülkesi"+faker.number().digits(7);
+        country.put("name",countryName);
+        country.put("code",faker.address().countryCode()+faker.number().digits(5));
 
         given()
                 .spec(recSpec)
@@ -128,46 +129,47 @@ public class MersysTestCampus {
                 .then()
                 .log().body() // gelen body yi log olarak göster
                 .statusCode(200)
-                .body("name", equalTo(gradeName))
-        ;
+                .body("name", equalTo(countryName))
+                ;
 
     }
 
-    @Test(dependsOnMethods = "UpdateGradeLevels")
-    public void DeleteGradeLevels() {
+    @Test(dependsOnMethods = "updateCountry")
+    public void deleteCountry() {
         given()
                 .spec(recSpec)
-                .pathParam("gradeID", gradeID)
+                .pathParam("countryID", countryID)
                 .log().uri()
 
                 .when()
-                .delete("/school-service/api/grade-levels/{gradeID}")
+                .delete("/school-service/api/grade-levels/{countryID}")
 
                 .then()
-                .log().body()
+                .log().body() // gelen body yi log olarak göster
                 .statusCode(200)
         ;
 
-    }
-
-    @Test
-    public void DeleteGradeLevelsNegativ() {
-        given()
-                .spec(recSpec)
-                .pathParam("gradeID", gradeID)
-                .log().uri()
-
-                .when()
-                .delete("/school-service/api/grade-levels/{gradeID}")
-
-                .then()
-                .log().body()
-                .statusCode(400)
-                .body("message", equalTo("Country not found"))
-
         ;
 
     }
 
+    @Test(dependsOnMethods = "deleteCountry")
+    public void deleteCountryNegative() {
+        given()
+                .spec(recSpec)
+                .pathParam("countryID",countryID)
+                .log().uri()
+
+                .when()
+                .delete("/school-service/api/grade-levels/{countryID}")
+
+                .then()
+                .log().body() // gelen body yi log olarak göster
+                .statusCode(400)
+                .body("message",equalTo("Country not found"))
+
+        ;
+
+    }
 
 }

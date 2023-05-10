@@ -14,11 +14,18 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.baseURI;
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 
 public class CountryTest {
+    Faker faker = new Faker();
+
+    String countryID;
+    String countryName;
+
 
     RequestSpecification recSpec;
-    String countryId;
+
 
     @BeforeClass
     public void Login() {
@@ -51,18 +58,17 @@ public class CountryTest {
 
     }
 
-    @Test
+    @Test(dependsOnMethods = "Login")
     public void createCountry() {
-
-        Faker faker = new Faker();
 
 
         Map<String, String> country = new HashMap<>();
-        country.put("name", faker.country().name());
-        country.put("code", faker.address().countryCode());
+        countryName = faker.address().country() + faker.number().digits(5);
+        country.put("name", countryName);
+        country.put("code", faker.address().countryCode() + faker.number().digits(5));
 
 
-        countryId =
+        countryID =
                 given()
                         .spec(recSpec)
                         .body(country)
@@ -76,27 +82,94 @@ public class CountryTest {
                         .statusCode(201)
                         .extract().path("id")
         ;
-        System.out.println("countryId = " + countryId);
+        System.out.println("countryId = " + countryID);
 
     }
 
     @Test(dependsOnMethods = "createCountry")
     public void createCountryNegative() {
+        Map<String, String> country = new HashMap<>();
+        country.put("name", countryName);
+        country.put("code", faker.address().countryCode() + faker.number().digits(5));
+
+
+        given()
+                .spec(recSpec)
+                .body(country)
+                .log().body()
+
+                .when()
+                .post("/school-service/api/countries")
+
+                .then()
+                //.log().body()
+                .statusCode(400)
+                .body("message", containsString("already"))  // gelen body deki...
+        ;
 
     }
 
     @Test(dependsOnMethods = "createCountryNegative")
     public void updateCountry() {
 
+        Map<String,String> country=new HashMap<>();
+        country.put("id",countryID);
+
+        countryName="haydar ülkesi"+faker.number().digits(7);
+        country.put("name",countryName);
+        country.put("code",faker.address().countryCode()+faker.number().digits(5));
+
+        given()
+                .spec(recSpec)
+                .body(country) // giden body
+                //.log().body() // giden body yi log olarak göster
+
+                .when()
+                .put("/school-service/api/countries")
+
+                .then()
+                .log().body() // gelen body yi log olarak göster
+                .statusCode(200)
+                .body("name", equalTo(countryName))
+                ;
+
     }
 
     @Test(dependsOnMethods = "updateCountry")
     public void deleteCountry() {
+        given()
+                .spec(recSpec)
+                .pathParam("countryID", countryID)
+                .log().uri()
+
+                .when()
+                .delete("/school-service/api/countries/{countryID}")
+
+                .then()
+                .log().body() // gelen body yi log olarak göster
+                .statusCode(200)
+        ;
+
+        ;
 
     }
 
     @Test(dependsOnMethods = "deleteCountry")
     public void deleteCountryNegative() {
+        given()
+                .spec(recSpec)
+                .pathParam("countryID",countryID)
+                .log().uri()
+
+                .when()
+                .delete("/school-service/api/countries/{countryID}")
+
+                .then()
+                .log().body() // gelen body yi log olarak göster
+                .statusCode(400)
+                .body("message",equalTo("Country not found"))
+
+        ;
 
     }
 
