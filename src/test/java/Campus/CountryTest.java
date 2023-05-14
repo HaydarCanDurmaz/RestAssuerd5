@@ -1,11 +1,10 @@
-package Campus2;
+package Campus;
 
 import com.github.javafaker.Faker;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.http.Cookies;
 import io.restassured.specification.RequestSpecification;
-import org.apache.http.cookie.Cookie;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
